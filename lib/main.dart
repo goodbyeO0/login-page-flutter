@@ -24,30 +24,24 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _passwordController =
+      TextEditingController(); // New password controller
   String _errorMessage = '';
 
   void _handleLogin() {
     String input = _controller.text.trim();
+    String password = _passwordController.text.trim(); // Get password input
 
-    // Check if the input is a number
-    if (RegExp(r'^[0-9]+$').hasMatch(input)) {
-      int number = int.parse(input);
-
-      // Check if the number is within the student range
-      if (number >= 2018000000 && number <= 2024999999) {
+    // Check if both username and password are provided
+    if (input.isNotEmpty && password.isNotEmpty) {
+      // Proceed with login without specific conditions
+      if (RegExp(r'^[0-9]+$').hasMatch(input)) {
+        int number = int.parse(input);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => StudentLandingPage()),
         );
-      } else {
-        setState(() {
-          _errorMessage = 'Invalid student number range.';
-        });
-      }
-    }
-    // Check if the input is alphabetic (for staff login)
-    else if (RegExp(r'^[a-zA-Z]+$').hasMatch(input)) {
-      if (input == 'root') {
+      } else if (input == 'root') {
         // Admin login
         Navigator.push(
           context,
@@ -62,7 +56,8 @@ class _LoginPageState extends State<LoginPage> {
       }
     } else {
       setState(() {
-        _errorMessage = 'Invalid input. Enter a valid number or username.';
+        _errorMessage =
+            'Please enter both username and password.'; // Updated error message
       });
     }
   }
@@ -86,6 +81,16 @@ class _LoginPageState extends State<LoginPage> {
                 errorText: _errorMessage.isEmpty ? null : _errorMessage,
               ),
               keyboardType: TextInputType.text,
+            ),
+            SizedBox(height: 20),
+            TextField(
+              // New password field
+              controller: _passwordController,
+              decoration: InputDecoration(
+                labelText: 'Enter password',
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true, // Hide password input
             ),
             SizedBox(height: 20),
             ElevatedButton(
